@@ -6,10 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(CircleCollider2D))]
 public class Magnet : MonoBehaviour
 {
-    [SerializeField]
-    private Polarity _polarity = Polarity.NEUTRAL;
-    [SerializeField]
-    private float _radius = 2f;
+    [SerializeField]    private Polarity _polarity = Polarity.NEUTRAL;
+    [SerializeField]    private float _radius = 2f;
 
     private Rigidbody2D _rigidbody;
     private CircleCollider2D _collider;
@@ -23,6 +21,7 @@ public class Magnet : MonoBehaviour
     public CircleCollider2D GetCollider => _collider ??= GetComponent<CircleCollider2D>();
     public float GetRadius => _radius;
 
+    internal Polarity GetPolarity => _polarity;
 
     // Start is called before the first frame update
     void Start()
@@ -47,7 +46,7 @@ public class Magnet : MonoBehaviour
         }
     }
 
-    public void Henshin(){
+    public void changePolarity(){
         switch(_polarity){
             case Polarity.NORTH:
             _polarity = Polarity.SOUTH;
