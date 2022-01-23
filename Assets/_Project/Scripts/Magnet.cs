@@ -6,46 +6,58 @@ using UnityEngine;
 public class Magnet : MonoBehaviour
 {
     [SerializeField]
-    private Polarity polarity = Polarity.NEUTRAL;
+    private Polarity _polarity = Polarity.NEUTRAL;
     [SerializeField]
-    private float radius = 2f;
+    private float _radius = 2f;
 
-    private Rigidbody2D rigidbody;
+    private Rigidbody2D _rigidbody;
 
     #nullable enable
     private static Magnet[]? allMagnets;
     public static Magnet[]? GetAllMagnets => allMagnets ??= FindObjectsOfType<Magnet>();
     #nullable disable
 
-    public Rigidbody2D GetRigidbody => rigidbody ??= GetComponent<Rigidbody2D>();
-    public float GetRadius => radius;
+    public Rigidbody2D GetRigidbody => _rigidbody ??= GetComponent<Rigidbody2D>();
+    public float GetRadius => _radius;
     // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         foreach (Magnet magnet in GetAllMagnets)
         {
             if(
-             this.polarity != Polarity.NEUTRAL &&
+             this._polarity != Polarity.NEUTRAL &&
              this != magnet &&
-             magnet.polarity != Polarity.NEUTRAL &&
+             magnet._polarity != Polarity.NEUTRAL &&
              Vector3.Distance(transform.position, magnet.transform.position) < this.GetRadius + magnet.GetRadius
              ){
                 Vector3 direction = (transform.position - magnet.transform.position).normalized;
-                GetRigidbody.AddForce(direction * Vector3.Distance(transform.position, magnet.transform.position) * ((this.polarity == magnet.polarity) ? 1 : -1));
+                GetRigidbody.AddForce(direction * Vector3.Distance(transform.position, magnet.transform.position) * ((this._polarity == magnet._polarity) ? 1 : -1));
             }
+        }
+    }
+
+    public void Henshin(){
+        switch(_polarity){
+            case Polarity.NORTH:
+            _polarity = Polarity.SOUTH;
+            break;
+            case Polarity.SOUTH:
+            case Polarity.NEUTRAL:
+            default:
+            _polarity = Polarity.NORTH;
+            break;
         }
     }
 
 #if UNITY_EDITOR
     void OnDrawGizmos()
     {
-        switch (polarity)
+        switch (_polarity)
         {
             case Polarity.NORTH:
             UnityEditor.Handles.color = Color.red;
@@ -58,7 +70,7 @@ public class Magnet : MonoBehaviour
             UnityEditor.Handles.color = Color.white;
             break;
         }
-        UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.back, radius);
+        UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.back, _radius);
     }
 #endif
 }
