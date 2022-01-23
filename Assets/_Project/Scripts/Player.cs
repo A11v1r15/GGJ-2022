@@ -13,7 +13,9 @@ public class Player : MonoBehaviour
     private Doll _doll;
     private float _movement;
     [SerializeField]
-    private float _SPEED;
+    private float _SPEED = 3f;
+    [SerializeField]
+    private float _JUMP_FORCE = 300f;
 
     public Magnet GetMagnet => _magnet ??= GetComponent<Magnet>();
     public Rigidbody2D GetRigidbody => _rigidbody ??= GetComponent<Rigidbody2D>();
@@ -26,11 +28,13 @@ public class Player : MonoBehaviour
             _controls.MagNet.MagMove.performed += ctx => Move(ctx);
             _controls.MagNet.MagMove.canceled += ctx => StopMove();
             _controls.MagNet.MagChange.performed += ctx => GetMagnet.Henshin();
+            _controls.MagNet.MagJump.started += ctx => Jump();
         }
         if (_doll == Doll.NET){
             _controls.MagNet.NetMove.performed += ctx => Move(ctx);
             _controls.MagNet.NetMove.canceled += ctx => StopMove();
             _controls.MagNet.NetChange.performed += ctx => GetMagnet.Henshin();
+            _controls.MagNet.NetJump.started += ctx => Jump();
         }
     }
     
@@ -49,6 +53,9 @@ public class Player : MonoBehaviour
     }
     void StopMove(){
         _movement = 0;
+    }
+    void Jump(){
+        GetRigidbody.AddForce(Vector2.up * _JUMP_FORCE);
     }
 
     public void OnEnable()

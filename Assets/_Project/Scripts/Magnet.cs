@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(CircleCollider2D))]
 public class Magnet : MonoBehaviour
 {
     [SerializeField]
@@ -11,6 +12,7 @@ public class Magnet : MonoBehaviour
     private float _radius = 2f;
 
     private Rigidbody2D _rigidbody;
+    private CircleCollider2D _collider;
 
     #nullable enable
     private static Magnet[]? allMagnets;
@@ -18,7 +20,10 @@ public class Magnet : MonoBehaviour
     #nullable disable
 
     public Rigidbody2D GetRigidbody => _rigidbody ??= GetComponent<Rigidbody2D>();
+    public CircleCollider2D GetCollider => _collider ??= GetComponent<CircleCollider2D>();
     public float GetRadius => _radius;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,10 +38,11 @@ public class Magnet : MonoBehaviour
              this._polarity != Polarity.NEUTRAL &&
              this != magnet &&
              magnet._polarity != Polarity.NEUTRAL &&
-             Vector3.Distance(transform.position, magnet.transform.position) < this.GetRadius + magnet.GetRadius
+             Vector3.Distance(transform.position, magnet.transform.position) < this.GetRadius
              ){
                 Vector3 direction = (transform.position - magnet.transform.position).normalized;
-                GetRigidbody.AddForce(direction * Vector3.Distance(transform.position, magnet.transform.position) * ((this._polarity == magnet._polarity) ? 1 : -1));
+                GetRigidbody.AddForce(direction * 100f * (_radius - DistanceTo(magnet)) * ((this._polarity == magnet._polarity) ? 1 : -1));
+                Debug.Log(gameObject.name + " " + (_radius - DistanceTo(magnet)) * ((this._polarity == magnet._polarity) ? 1 : -1));
             }
         }
     }
@@ -52,6 +58,10 @@ public class Magnet : MonoBehaviour
             _polarity = Polarity.NORTH;
             break;
         }
+    }
+
+    public float DistanceTo(Magnet other){
+        return Vector3.Distance(transform.position, other.transform.position) - GetCollider.radius - other.GetCollider.radius;
     }
 
 #if UNITY_EDITOR

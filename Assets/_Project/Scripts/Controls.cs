@@ -62,6 +62,24 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MagJump"",
+                    ""type"": ""Button"",
+                    ""id"": ""0b153e2a-3cb3-4885-b405-ae9217c84f63"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""NetJump"",
+                    ""type"": ""Button"",
+                    ""id"": ""e908da58-b5c3-4def-8082-e100cba29a8f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -152,6 +170,28 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""action"": ""NetChange"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7ec28718-2692-4996-be22-535037c16cde"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MagJump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""52c05b56-adc1-41b9-8d58-054fd88d9355"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NetJump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -164,6 +204,8 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         m_MagNet_NetMove = m_MagNet.FindAction("NetMove", throwIfNotFound: true);
         m_MagNet_MagChange = m_MagNet.FindAction("MagChange", throwIfNotFound: true);
         m_MagNet_NetChange = m_MagNet.FindAction("NetChange", throwIfNotFound: true);
+        m_MagNet_MagJump = m_MagNet.FindAction("MagJump", throwIfNotFound: true);
+        m_MagNet_NetJump = m_MagNet.FindAction("NetJump", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -227,6 +269,8 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     private readonly InputAction m_MagNet_NetMove;
     private readonly InputAction m_MagNet_MagChange;
     private readonly InputAction m_MagNet_NetChange;
+    private readonly InputAction m_MagNet_MagJump;
+    private readonly InputAction m_MagNet_NetJump;
     public struct MagNetActions
     {
         private @Controls m_Wrapper;
@@ -235,6 +279,8 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         public InputAction @NetMove => m_Wrapper.m_MagNet_NetMove;
         public InputAction @MagChange => m_Wrapper.m_MagNet_MagChange;
         public InputAction @NetChange => m_Wrapper.m_MagNet_NetChange;
+        public InputAction @MagJump => m_Wrapper.m_MagNet_MagJump;
+        public InputAction @NetJump => m_Wrapper.m_MagNet_NetJump;
         public InputActionMap Get() { return m_Wrapper.m_MagNet; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -256,6 +302,12 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @NetChange.started -= m_Wrapper.m_MagNetActionsCallbackInterface.OnNetChange;
                 @NetChange.performed -= m_Wrapper.m_MagNetActionsCallbackInterface.OnNetChange;
                 @NetChange.canceled -= m_Wrapper.m_MagNetActionsCallbackInterface.OnNetChange;
+                @MagJump.started -= m_Wrapper.m_MagNetActionsCallbackInterface.OnMagJump;
+                @MagJump.performed -= m_Wrapper.m_MagNetActionsCallbackInterface.OnMagJump;
+                @MagJump.canceled -= m_Wrapper.m_MagNetActionsCallbackInterface.OnMagJump;
+                @NetJump.started -= m_Wrapper.m_MagNetActionsCallbackInterface.OnNetJump;
+                @NetJump.performed -= m_Wrapper.m_MagNetActionsCallbackInterface.OnNetJump;
+                @NetJump.canceled -= m_Wrapper.m_MagNetActionsCallbackInterface.OnNetJump;
             }
             m_Wrapper.m_MagNetActionsCallbackInterface = instance;
             if (instance != null)
@@ -272,6 +324,12 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @NetChange.started += instance.OnNetChange;
                 @NetChange.performed += instance.OnNetChange;
                 @NetChange.canceled += instance.OnNetChange;
+                @MagJump.started += instance.OnMagJump;
+                @MagJump.performed += instance.OnMagJump;
+                @MagJump.canceled += instance.OnMagJump;
+                @NetJump.started += instance.OnNetJump;
+                @NetJump.performed += instance.OnNetJump;
+                @NetJump.canceled += instance.OnNetJump;
             }
         }
     }
@@ -282,5 +340,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         void OnNetMove(InputAction.CallbackContext context);
         void OnMagChange(InputAction.CallbackContext context);
         void OnNetChange(InputAction.CallbackContext context);
+        void OnMagJump(InputAction.CallbackContext context);
+        void OnNetJump(InputAction.CallbackContext context);
     }
 }
